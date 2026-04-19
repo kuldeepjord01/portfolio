@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kuldeep Ram | Python Backend Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050a0e;
+      --bg2: #0a1420;
+      --bg3: #0d1f2d;
+      --accent: #00ffe0;
+      --accent2: #00bfff;
+      --accent3: #7b61ff;
+      --text: #e0f4ff;
+      --muted: #607d8b;
+      --card: #0d1f2d;
+      --border: rgba(0,255,224,0.15);
+      --glow: 0 0 20px rgba(0,255,224,0.3);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CUSTOM CURSOR */
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      box-shadow: 0 0 12px var(--accent), 0 0 30px var(--accent);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(0,255,224,0.5);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+    }
+
+    /* CANVAS */
+    #bg-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 6%; height: 64px;
+      background: rgba(5,10,14,0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem; color: var(--accent);
+      text-decoration: none; letter-spacing: 1px;
+    }
+    .nav-logo span { color: var(--text); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.85rem; font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px; transition: color 0.3s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--accent); transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+
+    section { position: relative; z-index: 1; padding: 100px 8%; }
+
+    /* HERO */
+    #hero {
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; text-align: center;
+      min-height: 100vh; padding-top: 120px;
+    }
+    .hero-tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      color: var(--accent); letter-spacing: 4px; text-transform: uppercase;
+      margin-bottom: 1.2rem; opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+    .hero-name {
+      font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 800;
+      line-height: 1.05; margin-bottom: 0.5rem;
+      opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
+    }
+    .hero-name .last { color: var(--accent); text-shadow: var(--glow); }
+    .hero-typed-wrapper {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1rem, 2.5vw, 1.4rem); color: var(--accent2);
+      margin: 1rem 0 2rem; min-height: 2rem;
+      opacity: 0; animation: fadeUp 0.8s 0.7s forwards;
+    }
+    .typed-cursor {
+      display: inline-block; width: 2px; height: 1.3em;
+      background: var(--accent); margin-left: 3px;
+      vertical-align: middle; animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .hero-desc {
+      max-width: 560px; color: var(--muted); font-size: 1rem;
+      line-height: 1.8; margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp 0.8s 0.9s forwards;
+    }
+    .hero-btns {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: fadeUp 0.8s 1.1s forwards;
+    }
+    .btn {
+      padding: 0.75rem 2rem; border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+      letter-spacing: 1px; text-decoration: none; cursor: pointer;
+      transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-primary {
+      background: var(--accent); color: var(--bg); border: 1px solid var(--accent);
+      font-weight: 700; box-shadow: 0 0 20px rgba(0,255,224,0.3);
+    }
+    .btn-primary:hover {
+      background: transparent; color: var(--accent);
+      box-shadow: 0 0 30px rgba(0,255,224,0.5); transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent; color: var(--accent); border: 1px solid var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent); box-shadow: var(--glow); transform: translateY(-2px);
+    }
+    .scroll-indicator {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      opacity: 0; animation: fadeUp 1s 1.5s forwards;
+    }
+    .scroll-indicator span {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+      color: var(--muted); letter-spacing: 2px;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2s infinite;
+    }
+    @keyframes scrollPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* ===== FORZA HORIZON ROAD + CAR ===== */
+    .road-container {
+      position: fixed; bottom: 0; left: 0; width: 100%; z-index: 2;
+      pointer-events: none; overflow: hidden; height: 110px;
+    }
+
+    /* Asphalt road */
+    .road {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 72px;
+      background: linear-gradient(180deg, #090d11 0%, #0d1318 100%);
+      border-top: 2px solid #1a2530;
+    }
+    /* Road surface grain */
+    .road::before {
+      content:''; position:absolute; inset:0;
+      background: repeating-linear-gradient(90deg,
+        transparent 0px, transparent 38px,
+        rgba(255,255,255,0.015) 38px, rgba(255,255,255,0.015) 40px);
+    }
+    /* Center line dashes */
+    .road-line {
+      position: absolute; top: 34px; height: 4px; width: 72px; border-radius: 2px;
+      background: linear-gradient(90deg, #f5a800, #ffcc44);
+      box-shadow: 0 0 8px rgba(245,168,0,0.5);
+      animation: dashMove 0.9s linear infinite;
+    }
+    .road-line:nth-child(1)  { left:calc(0*160px);  animation-delay:0s; }
+    .road-line:nth-child(2)  { left:calc(1*160px);  animation-delay:-0.09s; }
+    .road-line:nth-child(3)  { left:calc(2*160px);  animation-delay:-0.18s; }
+    .road-line:nth-child(4)  { left:calc(3*160px);  animation-delay:-0.27s; }
+    .road-line:nth-child(5)  { left:calc(4*160px);  animation-delay:-0.36s; }
+    .road-line:nth-child(6)  { left:calc(5*160px);  animation-delay:-0.45s; }
+    .road-line:nth-child(7)  { left:calc(6*160px);  animation-delay:-0.54s; }
+    .road-line:nth-child(8)  { left:calc(7*160px);  animation-delay:-0.63s; }
+    .road-line:nth-child(9)  { left:calc(8*160px);  animation-delay:-0.72s; }
+    .road-line:nth-child(10) { left:calc(9*160px);  animation-delay:-0.81s; }
+    .road-line:nth-child(11) { left:calc(10*160px); animation-delay:-0.90s; }
+    @keyframes dashMove {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-160px); }
+    }
+
+    /* Road edge lines */
+    .road-edge {
+      position: absolute; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #fff 10%, #fff 90%, transparent 100%);
+      opacity: 0.06;
+    }
+    .road-edge.top { top: 2px; }
+    .road-edge.bottom { bottom: 2px; }
+
+    /* Ground glow under car */
+    .road-glow {
+      position: absolute; bottom: 72px; left: 0; right: 0; height: 38px;
+      background: linear-gradient(to top,
+        rgba(0,200,255,0.04) 0%,
+        transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Speed lines */
+    .speed-line {
+      position: absolute; top: 14px; height: 2px; border-radius: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      animation: speedLine 0.6s linear infinite;
+    }
+    .speed-line:nth-child(1) { width: 180px; left: 0%;  top: 10px; animation-delay: 0s; }
+    .speed-line:nth-child(2) { width: 120px; left: 20%; top: 22px; animation-delay: -0.2s; }
+    .speed-line:nth-child(3) { width: 240px; left: 40%; top: 8px;  animation-delay: -0.1s; }
+    .speed-line:nth-child(4) { width: 90px;  left: 60%; top: 18px; animation-delay: -0.3s; }
+    .speed-line:nth-child(5) { width: 160px; left: 70%; top: 28px; animation-delay: -0.15s; }
+    @keyframes speedLine {
+      from { transform: translateX(120%); opacity: 0; }
+      10%  { opacity: 1; }
+      to   { transform: translateX(-120%); opacity: 0; }
+    }
+
+    /* ---- CAR WRAPPER ---- */
+    .car-wrap {
+      position: absolute;
+      bottom: 72px;
+      left: -320px;
+      animation: carDrive 11s cubic-bezier(0.2,0,0.8,1) infinite;
+      filter: drop-shadow(0 8px 24px rgba(0,180,255,0.35))
+              drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+    }
+    .car-wrap svg { width: 280px; height: 100px; display: block; }
+
+    /* Wheel spin */
+    .fz-wheel {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: wheelSpin 0.45s linear infinite;
+    }
+    @keyframes wheelSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+    /* Headlight cone */
+    .fz-beam {
+      animation: beamFlicker 2s ease-in-out infinite;
+      transform-origin: left center;
+    }
+    @keyframes beamFlicker {
+      0%,100%{ opacity:0.65; transform:scaleX(1); }
+      50%    { opacity:0.9;  transform:scaleX(1.06); }
+    }
+
+    /* Underglow pulse */
+    .fz-underglow {
+      animation: underglowPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes underglowPulse {
+      0%,100%{ opacity:0.5; }
+      50%    { opacity:1; }
+    }
+
+    /* Exhaust particles */
+    .fz-exhaust {
+      animation: exhaustAnim 0.7s ease-out infinite alternate;
+      transform-origin: right center;
+    }
+    .fz-exhaust2 { animation-delay: 0.35s; }
+    @keyframes exhaustAnim {
+      from { opacity:0.55; transform:scaleX(1) translateX(0); }
+      to   { opacity:0;   transform:scaleX(1.8) translateX(-14px); }
+    }
+
+    /* Tail light glow */
+    .fz-tail { animation: tailGlow 1.2s ease-in-out infinite; }
+    @keyframes tailGlow {
+      0%,100%{ opacity:0.7; } 50%{ opacity:1; filter:blur(1px); }
+    }
+
+    @keyframes carDrive {
+      0%   { left: -320px; }
+      100% { left: calc(100vw + 40px); }
+    }
+
+    /* Ground shadow */
+    .car-shadow {
+      position: absolute; bottom: 72px; left: -320px;
+      width: 280px; height: 18px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.55) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: carDrive 11s cubic-bezier(0.2,0,0.8,1) infinite;
+      transform: scaleY(0.4);
+    }
+
+    /* SECTION HEADINGS */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+      color: var(--accent); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800;
+      margin-bottom: 3rem; position: relative; display: inline-block;
+    }
+    .section-title::after {
+      content: ''; position: absolute; bottom: -10px; left: 0;
+      width: 60px; height: 3px; background: var(--accent); box-shadow: var(--glow);
+    }
+
+    /* ABOUT */
+    #about {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center; min-height: auto; padding: 120px 8%;
+    }
+    .about-img-wrap { position: relative; display: flex; justify-content: center; }
+    .about-avatar {
+      width: 240px; height: 240px; border-radius: 50%;
+      background: var(--bg3); border: 2px solid var(--accent);
+      box-shadow: 0 0 40px rgba(0,255,224,0.25), inset 0 0 40px rgba(0,255,224,0.05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; animation: float 4s ease-in-out infinite; position: relative; z-index:1;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    .orbit-ring {
+      position: absolute; border: 1px dashed rgba(0,255,224,0.2);
+      border-radius: 50%; animation: spin 12s linear infinite;
+    }
+    .orbit-ring:nth-child(1) { width: 300px; height: 300px; animation-duration: 15s; }
+    .orbit-ring:nth-child(2) { width: 370px; height: 370px; animation-duration: 20s; animation-direction: reverse; }
+    .orbit-dot {
+      width: 8px; height: 8px; background: var(--accent); border-radius: 50%;
+      position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+      box-shadow: 0 0 8px var(--accent);
+    }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .about-text p { color: var(--muted); line-height: 1.9; margin-bottom: 1.2rem; font-size: 0.97rem; }
+    .about-text p strong { color: var(--accent); font-weight: 600; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 1.5rem 0 2rem; }
+    .info-item { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+    .info-item .label { color: var(--muted); }
+    .info-item .val { color: var(--accent); }
+
+    /* SKILLS */
+    #skills { padding: 100px 8%; min-height: auto; }
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .skill-category {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.8rem; transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .skill-category:hover {
+      transform: translateY(-6px); box-shadow: 0 8px 40px rgba(0,255,224,0.1);
+      border-color: rgba(0,255,224,0.3);
+    }
+    .skill-cat-title {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent);
+      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .skill-item { margin-bottom: 1rem; }
+    .skill-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem; }
+    .skill-header span:last-child { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.75rem; }
+    .skill-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+    .skill-fill {
+      height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px; width: 0;
+      transition: width 1.2s cubic-bezier(0.25,1,0.5,1);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* PROJECTS */
+    #projects { padding: 100px 8%; min-height: auto; }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.8rem; }
+    .project-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2rem; position: relative; overflow: hidden;
+      transition: transform 0.35s, box-shadow 0.35s;
+      transform-style: preserve-3d;
+    }
+    .project-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .project-card:hover { box-shadow: 0 16px 48px rgba(0,255,224,0.12); border-color: rgba(0,255,224,0.3); }
+    .project-card:hover::before { opacity: 1; }
+    .project-num {
+      font-family: 'JetBrains Mono', monospace; font-size: 3rem; font-weight: 700;
+      color: rgba(0,255,224,0.06); position: absolute; top: 1rem; right: 1.5rem; line-height: 1;
+    }
+    .project-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+    .project-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; color: var(--text); }
+    .project-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.8; margin-bottom: 1.4rem; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+      padding: 0.25rem 0.7rem; border-radius: 20px;
+      background: rgba(0,255,224,0.08); border: 1px solid rgba(0,255,224,0.2); color: var(--accent);
+    }
+    .project-links { display: flex; gap: 1rem; }
+    .project-link {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--muted);
+      text-decoration: none; display: flex; align-items: center; gap: 0.4rem; transition: color 0.3s;
+    }
+    .project-link:hover { color: var(--accent); }
+
+    /* CERTIFICATIONS */
+    #certifications { padding: 80px 8%; min-height: auto; }
+    .cert-cards { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+    .cert-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1.2rem;
+      min-width: 280px; transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .cert-card:hover {
+      border-color: rgba(0,255,224,0.4); box-shadow: 0 4px 30px rgba(0,255,224,0.1);
+      transform: translateY(-4px);
+    }
+    .cert-icon { font-size: 2.2rem; animation: shimmer 3s ease-in-out infinite; }
+    @keyframes shimmer { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.5) drop-shadow(0 0 8px gold)} }
+    .cert-info h4 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .cert-info p { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent); }
+
+    /* CONTACT */
+    #contact { padding: 100px 8%; min-height: auto; }
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .contact-info p { color: var(--muted); line-height: 1.9; margin-bottom: 2rem; font-size: 0.95rem; }
+    .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-link {
+      display: flex; align-items: center; gap: 1rem;
+      text-decoration: none; color: var(--text); font-size: 0.9rem;
+      padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: 8px; transition: all 0.3s;
+    }
+    .contact-link i { color: var(--accent); width: 20px; text-align: center; }
+    .contact-link:hover { border-color: var(--accent); background: rgba(0,255,224,0.05); transform: translateX(6px); }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      color: var(--accent); letter-spacing: 2px; text-transform: uppercase;
+    }
+    .form-group input, .form-group textarea {
+      background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.85rem 1rem; color: var(--text); font-family: 'Sora', sans-serif;
+      font-size: 0.9rem; outline: none; transition: border-color 0.3s, box-shadow 0.3s; resize: none;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,255,224,0.08);
+    }
+    .form-group textarea { min-height: 130px; }
+
+      /* FOOTER */
+    footer {
+      text-align: center; padding: 2.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--muted);
+      position: relative; z-index: 1;
+    }
+    footer span { color: var(--accent); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    @media(max-width: 768px) {
+      #about { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+      .contact-wrap { grid-template-columns: 1fr; gap: 3rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+
+<nav id="navbar">
+  <a class="nav-logo" href="#hero">KD<span>.dev</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#certifications">certs</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <p class="hero-tag">// available for hire</p>
+  <h1 class="hero-name">
+    <span class="first">Kuldeep </span><span class="last">Ram</span>
+  </h1>
+  <div class="hero-typed-wrapper">
+    <span id="typed-text"></span><span class="typed-cursor"></span>
+  </div>
+  <p class="hero-desc">Detail-oriented BCA graduate specializing in full-stack web development with Python, FastAPI & Django. Building scalable REST APIs with PostgreSQL — open to exciting opportunities.</p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn btn-primary"><i class="fas fa-code"></i> View Projects</a>
+    <a href="#contact" class="btn btn-outline"><i class="fas fa-paper-plane"></i> Hire Me</a>
+  </div>
+  <div class="scroll-indicator">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-img-wrap reveal-left">
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="about-avatar">👨‍💻</div>
+  </div>
+  <div class="about-text reveal-right">
+    <p class="section-label">// about me</p>
+    <h2 class="section-title">Who Am I?</h2>
+    <p>I'm <strong>Kuldeep Ram</strong>, a Python & Backend Developer from <strong>Jashpur Nagar, Chhattisgarh</strong>. I hold a BCA from Govt. Ram Bhajan Rai NES PG College (2022–2025) and I'm actively seeking entry-level roles.</p>
+    <p>I love crafting clean REST APIs and web systems. My core stack is <strong>Python, Django, FastAPI, PostgreSQL, Supabase</strong>, with hands-on experience deploying on <strong>Vercel, Render & Supabase Cloud</strong>.</p>
+    <div class="info-grid">
+      <div class="info-item"><span class="label">Location: </span><span class="val">Chhattisgarh, IN</span></div>
+      <div class="info-item"><span class="label">Degree: </span><span class="val">BCA (2022–2025)</span></div>
+      <div class="info-item"><span class="label">Phone: </span><span class="val">+91 9516960610</span></div>
+      <div class="info-item"><span class="label">Status: </span><span class="val">Open to Work ✅</span></div>
+    </div>
+    <a href="mailto:kuldeepramjsp@gmail.com" class="btn btn-primary"><i class="fas fa-envelope"></i> Contact Me</a>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="reveal">
+    <p class="section-label">// technical expertise</p>
+    <h2 class="section-title">My Skills</h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-category reveal">
+      <div class="skill-cat-title"><i class="fas fa-server"></i> Backend</div>
+      <div class="skill-item"><div class="skill-header"><span>Python</span><span>90%</span></div><div class="skill-bar"><div class="skill-fill" data-width="90"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>Django</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>FastAPI</span><span>82%</span></div><div class="skill-bar"><div class="skill-fill" data-width="82"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>RESTful APIs / JWT Auth</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
+    </div>
+    <div class="skill-category reveal" style="transition-delay:0.1s">
+      <div class="skill-cat-title"><i class="fas fa-database"></i> Database & Cloud</div>
+      <div class="skill-item"><div class="skill-header"><span>PostgreSQL / SQL</span><span>82%</span></div><div class="skill-bar"><div class="skill-fill" data-width="82"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>Supabase Cloud</span><span>78%</span></div><div class="skill-bar"><div class="skill-fill" data-width="78"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>Vercel / Render Deploy</span><span>75%</span></div><div class="skill-bar"><div class="skill-fill" data-width="75"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>Database Design</span><span>78%</span></div><div class="skill-bar"><div class="skill-fill" data-width="78"></div></div></div>
+    </div>
+    <div class="skill-category reveal" style="transition-delay:0.2s">
+      <div class="skill-cat-title"><i class="fas fa-tools"></i> Frontend & Tools</div>
+      <div class="skill-item"><div class="skill-header"><span>HTML, CSS, Bootstrap</span><span>80%</span></div><div class="skill-bar"><div class="skill-fill" data-width="80"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>Jinja2 Templates</span><span>78%</span></div><div class="skill-bar"><div class="skill-fill" data-width="78"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>Git, GitHub, Postman</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span>OpenAI / Gemini AI</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-width="65"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal">
+    <p class="section-label">// what I've built</p>
+    <h2 class="section-title">Projects</h2>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <span class="project-num">01</span>
+      <span class="project-icon">🏥</span>
+      <h3 class="project-title">Hospital Management System</h3>
+      <p class="project-desc">Web app for managing patients, doctors, and appointments. Built full CRUD for patient records, doctor profiles, and appointment scheduling. Live on Render.</p>
+      <div class="project-tags">
+        <span class="tag">Python</span><span class="tag">Django</span>
+        <span class="tag">PostgreSQL</span><span class="tag">Tailwind CSS</span><span class="tag">Git</span>
+      </div>
+      <div class="project-links">
+        <a href="https://kdhospital.onrender.com" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+        <a href="https://github.com/kuldeepjord01" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub</a>
+      </div>
+    </div>
+    <div class="project-card reveal" style="transition-delay:0.15s">
+      <span class="project-num">02</span>
+      <span class="project-icon">🍦</span>
+      <h3 class="project-title">Ice Cream Center Web App</h3>
+      <p class="project-desc">Django-based web app to manage ice cream products and customer orders. Implemented secure user authentication and REST APIs with full CRUD operations.</p>
+      <div class="project-tags">
+        <span class="tag">Python</span><span class="tag">Django</span>
+        <span class="tag">DRF</span><span class="tag">JWT Auth</span><span class="tag">PostgreSQL</span>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/kuldeepjord01" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub</a>
+      </div>
+    </div>
+    <div class="project-card reveal" style="transition-delay:0.3s">
+      <span class="project-num">03</span>
+      <span class="project-icon">🏪</span>
+      <h3 class="project-title">Wholeseller Web Application</h3>
+      <p class="project-desc">Django-based platform for managing wholesale products and bulk orders with secure user authentication, REST APIs, and full CRUD operations.</p>
+      <div class="project-tags">
+        <span class="tag">Python</span><span class="tag">Django</span>
+        <span class="tag">DRF</span><span class="tag">JWT Auth</span><span class="tag">PostgreSQL</span>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/kuldeepjord01" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="reveal">
+    <p class="section-label">// achievements</p>
+    <h2 class="section-title">Certifications</h2>
+  </div>
+  <div class="cert-cards">
+    <div class="cert-card reveal">
+      <span class="cert-icon">🚀</span>
+      <div class="cert-info">
+        <h4>ISRO START Program</h4>
+        <p>Space Science & Technology Awareness Training · ISRO</p>
+      </div>
+    </div>
+    <div class="cert-card reveal" style="transition-delay:0.1s">
+      <span class="cert-icon">🎓</span>
+      <div class="cert-info">
+        <h4>Bachelor of Computer Applications</h4>
+        <p>Govt. Ram Bhajan Rai NES PG College · 2022–2025</p>
+      </div>
+    </div>
+    <div class="cert-card reveal" style="transition-delay:0.2s">
+      <span class="cert-icon">🌐</span>
+      <div class="cert-info">
+        <h4>Live Project Deployment</h4>
+        <p>Hospital Management System · Render Cloud</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <p class="section-label">// let's connect</p>
+    <h2 class="section-title">Get In Touch</h2>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-info reveal-left">
+      <p>I'm actively looking for entry-level Python Developer or Backend Developer roles. If you have an opportunity or just want to say hi, my inbox is always open!</p>
+      <div class="contact-links">
+        <a href="mailto:kuldeepramjsp@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> kuldeepramjsp@gmail.com</a>
+        <a href="https://www.linkedin.com/in/kuldeep-ram-a20738362" target="_blank" class="contact-link"><i class="fab fa-linkedin"></i> linkedin.com/in/kuldeep-ram-a20738362</a>
+        <a href="https://github.com/kuldeepjord01" target="_blank" class="contact-link"><i class="fab fa-github"></i> github.com/kuldeepjord01</a>
+        <a href="tel:+919516960610" class="contact-link"><i class="fas fa-phone"></i> +91 9516960610</a>
+      </div>
+    </div>
+    <div class="contact-form reveal-right">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" placeholder="Your name" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="your@email.com" />
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea placeholder="Hey Kuldeep, I'd like to connect about..."></textarea>
+      </div>
+      <button class="btn btn-primary" style="border:none;width:100%;justify-content:center;font-size:0.9rem;">
+        <i class="fas fa-paper-plane"></i> Send Message
+      </button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Designed & Built by <span>Kuldeep Ram</span> · © 2026 · Made with <span>♥</span> in Chhattisgarh</p>
+</footer>
+
+<!-- FORZA HORIZON ROAD + CAR -->
+<div class="road-container">
+  <div class="road-glow"></div>
+  <div class="road">
+    <div class="road-edge top"></div>
+    <div class="road-edge bottom"></div>
+    <!-- Speed lines -->
+    <div class="speed-line"></div><div class="speed-line"></div>
+    <div class="speed-line"></div><div class="speed-line"></div>
+    <div class="speed-line"></div>
+    <!-- Center dashes -->
+    <div class="road-line"></div><div class="road-line"></div>
+    <div class="road-line"></div><div class="road-line"></div>
+    <div class="road-line"></div><div class="road-line"></div>
+    <div class="road-line"></div><div class="road-line"></div>
+    <div class="road-line"></div><div class="road-line"></div>
+    <div class="road-line"></div>
+  </div>
+
+  <!-- Ground shadow -->
+  <div class="car-shadow"></div>
+
+  <!-- FORZA HORIZON SUPERCAR SVG -->
+  <div class="car-wrap">
+    <svg viewBox="0 0 280 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Body gradient: deep blue/cyan metallic -->
+        <linearGradient id="bodyTop" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#c8f0ff"/>
+          <stop offset="18%"  stop-color="#7ad4f5"/>
+          <stop offset="45%"  stop-color="#1a8fbf"/>
+          <stop offset="75%"  stop-color="#0d5f8a"/>
+          <stop offset="100%" stop-color="#07394f"/>
+        </linearGradient>
+        <linearGradient id="bodySide" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#0d5f8a"/>
+          <stop offset="100%" stop-color="#041e2a"/>
+        </linearGradient>
+        <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#d6f4ff"/>
+          <stop offset="50%"  stop-color="#5ab8e0"/>
+          <stop offset="100%" stop-color="#1a6e9a"/>
+        </linearGradient>
+        <!-- Wheel gradient -->
+        <radialGradient id="wheelGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#2a2a2a"/>
+          <stop offset="70%"  stop-color="#111"/>
+          <stop offset="100%" stop-color="#000"/>
+        </radialGradient>
+        <radialGradient id="rimGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#e0e8ff"/>
+          <stop offset="40%"  stop-color="#8ab0d0"/>
+          <stop offset="100%" stop-color="#334"/>
+        </radialGradient>
+        <!-- Window gradient -->
+        <linearGradient id="winGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"   stop-color="#b8e8ff" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#0a4060" stop-opacity="0.7"/>
+        </linearGradient>
+        <!-- Headlight beam -->
+        <linearGradient id="beamGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#fff" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#fffbe0" stop-opacity="0"/>
+        </linearGradient>
+        <!-- Underglow -->
+        <linearGradient id="underGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#00c8ff" stop-opacity="0"/>
+          <stop offset="30%"  stop-color="#00c8ff" stop-opacity="0.8"/>
+          <stop offset="70%"  stop-color="#00c8ff" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#00c8ff" stop-opacity="0"/>
+        </linearGradient>
+        <!-- Exhaust -->
+        <radialGradient id="exhaustGrad" cx="0%" cy="50%" r="100%">
+          <stop offset="0%"   stop-color="#aaddff" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#5599cc" stop-opacity="0"/>
+        </radialGradient>
+        <!-- Carbon fiber stripe -->
+        <linearGradient id="stripeGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#00ffe0" stop-opacity="0"/>
+          <stop offset="40%"  stop-color="#00ffe0" stop-opacity="0.7"/>
+          <stop offset="60%"  stop-color="#00ffe0" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#00ffe0" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="glowFilter">
+          <feGaussianBlur stdDeviation="2.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="strongGlow">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- === HEADLIGHT BEAM === -->
+      <polygon class="fz-beam"
+        points="255,38 280,28 280,52 255,47"
+        fill="url(#beamGrad)" opacity="0.75"/>
+      <polygon class="fz-beam"
+        points="255,40 275,22 280,22 280,60 275,60 255,46"
+        fill="url(#beamGrad)" opacity="0.3"/>
+
+      <!-- === EXHAUST SMOKE === -->
+      <ellipse class="fz-exhaust" cx="20" cy="62" rx="14" ry="6" fill="url(#exhaustGrad)"/>
+      <ellipse class="fz-exhaust fz-exhaust2" cx="14" cy="60" rx="9" ry="4" fill="url(#exhaustGrad)"/>
+
+      <!-- === UNDERGLOW === -->
+      <ellipse class="fz-underglow"
+        cx="150" cy="76" rx="110" ry="7"
+        fill="url(#underGlow)" opacity="0.7"/>
+
+      <!-- === BODY LOWER SILL === -->
+      <path d="M48 66 Q55 70 80 72 L210 72 Q230 72 240 68 L248 62 L42 62 Z"
+        fill="url(#bodySide)"/>
+
+      <!-- === MAIN BODY === -->
+      <!-- Lower body panel -->
+      <path d="M42 62 L248 62 L255 54 L252 48 L240 44 L220 42 L58 42 L30 48 L28 54 Z"
+        fill="url(#bodyTop)"/>
+
+      <!-- === ROOF / CABIN === -->
+      <path d="M82 42 L96 18 Q108 10 148 10 Q188 10 198 18 L212 42 Z"
+        fill="url(#roofGrad)"/>
+      <!-- Roof highlight -->
+      <path d="M100 18 Q120 10 160 10 Q185 12 197 20 L193 22 Q183 13 160 13 Q130 13 108 20 Z"
+        fill="white" opacity="0.25"/>
+
+      <!-- === WINDOWS === -->
+      <!-- Front window -->
+      <path d="M166 16 L195 19 L211 40 L168 40 Z"
+        fill="url(#winGrad)" opacity="0.88"/>
+      <!-- Rear window -->
+      <path d="M97 16 L128 40 L84 40 L85 20 Z"
+        fill="url(#winGrad)" opacity="0.88"/>
+      <!-- Middle window -->
+      <path d="M130 40 L132 14 Q148 12 162 14 L164 40 Z"
+        fill="url(#winGrad)" opacity="0.88"/>
+      <!-- Window trim line -->
+      <path d="M82 42 L96 18 Q108 10 148 10 Q188 10 198 18 L212 42"
+        stroke="#b8e8ff" stroke-width="0.8" fill="none" opacity="0.6"/>
+      <!-- Pillar lines -->
+      <line x1="130" y1="13" x2="128" y2="40" stroke="#0a3048" stroke-width="2"/>
+      <line x1="166" y1="15" x2="166" y2="40" stroke="#0a3048" stroke-width="2"/>
+
+      <!-- === BODY HIGHLIGHTS === -->
+      <!-- Top crease highlight -->
+      <path d="M60 43 Q148 38 240 44"
+        stroke="#c8f0ff" stroke-width="1.2" fill="none" opacity="0.5"/>
+      <!-- Side crease -->
+      <path d="M50 55 Q148 52 248 56"
+        stroke="#5abcdc" stroke-width="0.7" fill="none" opacity="0.4"/>
+
+      <!-- === HOOD SCOOP === -->
+      <path d="M220 44 Q230 40 240 42 L240 44 Z"
+        fill="#041e2a" opacity="0.8"/>
+      <path d="M221 44 L235 41 L236 43 L222 45 Z"
+        fill="#00c8ff" opacity="0.3"/>
+
+      <!-- === FRONT SPLITTER === -->
+      <path d="M245 60 L258 58 L260 62 L244 63 Z"
+        fill="#041020"/>
+      <path d="M245 60 L260 58"
+        stroke="#00ffe0" stroke-width="0.8" opacity="0.6"/>
+
+      <!-- === REAR DIFFUSER === -->
+      <path d="M28 60 L40 62 L42 66 L26 65 Z"
+        fill="#041020"/>
+      <line x1="30" y1="62" x2="40" y2="63" stroke="#00ffe0" stroke-width="0.6" opacity="0.5"/>
+
+       <!-- === SPOILER === -->
+      <rect x="82" y="16" width="4" height="18" fill="#0a3a52" rx="1"/>
+      <rect x="74" y="14" width="20" height="4" rx="1.5"
+        fill="url(#bodySide)" stroke="#b0dff5" stroke-width="0.6"/>
+
+      <!-- === CYAN ACCENT STRIPE === -->
+      <path d="M50 53 Q148 50 248 54"
+        stroke="url(#stripeGrad)" stroke-width="2.5" fill="none" filter="url(#glowFilter)"/>
+
+      <!-- === HEADLIGHTS === -->
+      <!-- Main headlight housing -->
+      <path d="M242 44 L255 46 L257 52 L244 53 Z"
+        fill="#041830"/>
+      <!-- LED DRL strip -->
+      <path d="M244 44 L254 46 L254 48 L244 47 Z"
+        fill="#fff" opacity="0.95" filter="url(#glowFilter)"/>
+      <!-- Headlight bulb -->
+      <ellipse cx="252" cy="50" rx="4" ry="2.5"
+        fill="#fffbe0" opacity="0.9" filter="url(#strongGlow)"/>
+      <!-- Accent line -->
+      <line x1="244" y1="49" x2="256" y2="51"
+        stroke="#00c8ff" stroke-width="1" opacity="0.7"/>
+
+      <!-- === TAIL LIGHTS === -->
+      <path class="fz-tail" d="M28 46 L42 44 L42 54 L30 55 Z"
+        fill="#300"/>
+      <!-- LED tail strip -->
+      <path class="fz-tail" d="M30 46 L40 44 L40 47 L30 47 Z"
+        fill="#ff2020" opacity="0.9" filter="url(#glowFilter)"/>
+      <path class="fz-tail" d="M30 50 L40 50 L40 53 L30 54 Z"
+        fill="#ff4000" opacity="0.85" filter="url(#glowFilter)"/>
+
+      <!-- === DOOR LINE === -->
+      <path d="M130 40 Q132 56 138 62 L155 62 Q161 56 164 40"
+        stroke="#0a3048" stroke-width="1.2" fill="none" opacity="0.7"/>
+      <!-- Door handle -->
+      <rect x="145" y="52" width="14" height="3" rx="1.5"
+        fill="#b8e8ff" opacity="0.5"/>
+
+      <!-- === FRONT WHEEL ARCH === -->
+      <path d="M192 62 Q192 78 210 78 Q228 78 228 62"
+        stroke="#0d5f8a" stroke-width="2" fill="#07202e"/>
+
+      <!-- === REAR WHEEL ARCH === -->
+      <path d="M56 62 Q56 78 74 78 Q92 78 92 62"
+        stroke="#0d5f8a" stroke-width="2" fill="#07202e"/>
+
+      <!-- === FRONT WHEEL === -->
+      <g class="fz-wheel">
+        <circle cx="210" cy="75" r="19" fill="url(#wheelGrad)"/>
+        <!-- Tire -->
+        <circle cx="210" cy="75" r="19" stroke="#1a1a2a" stroke-width="3.5" fill="none"/>
+        <!-- Rim -->
+        <circle cx="210" cy="75" r="14" fill="url(#rimGrad)"/>
+        <!-- Spokes -->
+        <line x1="210" y1="62" x2="210" y2="88" stroke="#667" stroke-width="2.5"/>
+        <line x1="197" y1="68" x2="223" y2="82" stroke="#667" stroke-width="2.5"/>
+        <line x1="197" y1="82" x2="223" y2="68" stroke="#667" stroke-width="2.5"/>
+        <line x1="196" y1="75" x2="224" y2="75" stroke="#667" stroke-width="2.5"/>
+        <line x1="200" y1="64" x2="220" y2="86" stroke="#556" stroke-width="1.5"/>
+        <line x1="200" y1="86" x2="220" y2="64" stroke="#556" stroke-width="1.5"/>
+        <!-- Rim inner ring -->
+        <circle cx="210" cy="75" r="7" fill="#1a2230" stroke="#889" stroke-width="1.5"/>
+        <circle cx="210" cy="75" r="3.5" fill="#aac0d0"/>
+        <!-- Rim shine -->
+        <path d="M202 66 Q208 63 214 67" stroke="white" stroke-width="1.2" fill="none" opacity="0.5"/>
+      </g>
+      <!-- Wheel arch shadow -->
+      <path d="M192 64 Q192 80 210 80 Q228 80 228 64"
+        stroke="rgba(0,0,0,0.5)" stroke-width="1.5" fill="none"/>
+
+      <!-- === REAR WHEEL === -->
+      <g class="fz-wheel">
+        <circle cx="74" cy="75" r="19" fill="url(#wheelGrad)"/>
+        <circle cx="74" cy="75" r="19" stroke="#1a1a2a" stroke-width="3.5" fill="none"/>
+        <circle cx="74" cy="75" r="14" fill="url(#rimGrad)"/>
+        <line x1="74" y1="62" x2="74" y2="88" stroke="#667" stroke-width="2.5"/>
+        <line x1="61" y1="68" x2="87" y2="82" stroke="#667" stroke-width="2.5"/>
+        <line x1="61" y1="82" x2="87" y2="68" stroke="#667" stroke-width="2.5"/>
+        <line x1="60" y1="75" x2="88" y2="75" stroke="#667" stroke-width="2.5"/>
+        <line x1="64" y1="64" x2="84" y2="86" stroke="#556" stroke-width="1.5"/>
+        <line x1="64" y1="86" x2="84" y2="64" stroke="#556" stroke-width="1.5"/>
+        <circle cx="74" cy="75" r="7" fill="#1a2230" stroke="#889" stroke-width="1.5"/>
+        <circle cx="74" cy="75" r="3.5" fill="#aac0d0"/>
+        <path d="M66 66 Q72 63 78 67" stroke="white" stroke-width="1.2" fill="none" opacity="0.5"/>
+      </g>
+      <path d="M56 64 Q56 80 74 80 Q92 80 92 64"
+        stroke="rgba(0,0,0,0.5)" stroke-width="1.5" fill="none"/>
+
+      <!-- === BRAKE CALIPER (visible through spokes) === -->
+      <path d="M205 64 L208 68" stroke="#ff2020" stroke-width="2.5" opacity="0.6"/>
+      <path d="M69" y1="64" x2="72" y2="68" stroke="#ff2020" stroke-width="2.5" opacity="0.6"/>
+
+      <!-- === MIRROR === -->
+      <path d="M212 42 L218 38 L222 40 L218 44 Z"
+        fill="#0d5f8a" stroke="#5ab0d0" stroke-width="0.6"/>
+
+      <!-- === LOGO BADGE (center hood) === -->
+      <circle cx="220" cy="46" r="3.5" fill="#041020" stroke="#00ffe0" stroke-width="0.8" opacity="0.8"/>
+      <text x="220" y="48.5" text-anchor="middle" font-size="4" fill="#00ffe0" font-family="monospace" opacity="0.9">KD</text>
+    </svg>
+  </div>
+</div>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx=0, my=0, rx=0, ry=0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function animCursor() {
+    cursor.style.transform = `translate(${mx-6}px, ${my-6}px)`;
+    rx += (mx-rx-18)*0.12; ry += (my-ry-18)*0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(animCursor);
+  })();
+
+  // CANVAS PARTICLES
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  function resize() { canvas.width=innerWidth; canvas.height=innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  const particles = Array.from({length:100}, () => ({
+    x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+    size: Math.random()*1.5+0.3, sx:(Math.random()-0.5)*0.3,
+    sy:(Math.random()-0.5)*0.3, op:Math.random()*0.35+0.05
+  }));
+  (function anim() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      p.x+=p.sx; p.y+=p.sy;
+      if(p.x<0||p.x>canvas.width||p.y<0||p.y>canvas.height){
+        p.x=Math.random()*canvas.width; p.y=Math.random()*canvas.height;
+      }
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,255,224,${p.op})`; ctx.fill();
+    });
+    for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++){
+      const d=Math.hypot(particles[i].x-particles[j].x, particles[i].y-particles[j].y);
+      if(d<90){ ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`rgba(0,255,224,${0.06*(1-d/90)})`; ctx.stroke(); }
+    }
+    requestAnimationFrame(anim);
+  })();
+
+  // TYPEWRITER
+  const phrases=['Python Developer','Backend Engineer','API Builder','Django Expert','FastAPI Dev'];
+  let pi=0,ci=0,del=false;
+  const el=document.getElementById('typed-text');
+  (function type(){
+    const w=phrases[pi];
+    if(!del){ el.textContent=w.slice(0,++ci); if(ci===w.length){del=true;setTimeout(type,1800);return;} }
+    else { el.textContent=w.slice(0,--ci); if(ci===0){del=false;pi=(pi+1)%phrases.length;} }
+    setTimeout(type,del?60:100);
+  })();
+
+  // SCROLL REVEAL
+  const obs = new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      e.target.querySelectorAll('.skill-fill').forEach(b=>b.style.width=b.dataset.width+'%');
+    }
+  }),{threshold:0.15});
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>obs.observe(el));
+
+  // 3D TILT
+  document.querySelectorAll('.project-card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-0.5, y=(e.clientY-r.top)/r.height-0.5;
+      card.style.transform=`translateY(-8px) rotateX(${-y*8}deg) rotateY(${x*8}deg)`;
+    });
+    card.addEventListener('mouseleave',()=>card.style.transform='');
+  });
+
+  // NAVBAR SCROLL
+  window.addEventListener('scroll',()=>{
+    document.getElementById('navbar').style.background=
+      scrollY>50?'rgba(5,10,14,0.95)':'rgba(5,10,14,0.6)';
+  });
+</script>
+</body>
+</html>
